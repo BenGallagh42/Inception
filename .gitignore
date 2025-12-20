@@ -1,0 +1,13 @@
+# Secrets and passwords
+secrets/
+*.txt
+.env
+
+# Volumes data
+/home/*/data/
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~
