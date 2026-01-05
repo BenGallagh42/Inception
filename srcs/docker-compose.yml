@@ -1,0 +1,167 @@
+# ============================================================================ #
+# SERVICES                                                                     #
+# ============================================================================ #
+
+# List of containers to create
+services:
+
+  # ==========================================================================
+  # NGINX
+  # ==========================================================================
+  nginx:
+    container_name: nginx
+    
+    # Build configuration
+    build:
+      # Path to the Dockerfile (relative to this file)
+      context: ./requirements/nginx
+      # Name of the Dockerfile to use
+      dockerfile: Dockerfile
+    
+    # Image name after building
+    image: nginx:inception
+    
+    # Ports mapping: host:container
+    # 443 is the HTTPS port (TLS/SSL)
+    ports:
+      - "443:443"
+    
+    # Networks this container is connected to
+    networks:
+      - inception-network
+    
+    # Volumes: mount host directories into the container
+    # This allows nginx to serve WordPress files
+    volumes:
+      - wordpress-data:/var/www/html
+    
+    # Dependencies: which services must start before this one
+    depends_on:
+      - wordpress
+    
+    # Restart policy: always restart if container stops
+    restart: always
+    
+    env_file:
+      - .env
+
+  # ==========================================================================
+  # WORDPRESS
+  # ==========================================================================
+  wordpress:
+    container_name: wordpress
+    
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    
+    image: wordpress:inception
+    
+    # This service doesn't expose ports directly
+    # It communicates with nginx through the network
+    
+    networks:
+      - inception-network
+    
+    volumes:
+      # WordPress files (themes, plugins, uploads)
+      - wordpress-data:/var/www/html
+    
+    depends_on:
+      - mariadb
+    
+    restart: always
+    
+    env_file:
+      - .env
+    
+    secrets:
+      - db_password
+      - credentials
+
+  # ==========================================================================
+  # MARIADB
+  # ==========================================================================
+  mariadb:
+    container_name: mariadb
+    
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    
+    image: mariadb:inception
+    
+    # This service doesn't expose ports to the host
+    # Only accessible from inside the docker network
+    
+    networks:
+      - inception-network
+    
+    volumes:
+      # Database files (persistent storage)
+      - mariadb-data:/var/lib/mysql
+    
+    restart: always
+    
+    env_file:
+      - .env
+    
+    secrets:
+      - db_password
+      - db_root_password
+
+# ============================================================================ #
+# NETWORKS                                                                     #
+# ============================================================================ #
+
+networks:
+  # Custom bridge network for service communication
+  # All containers in this network can communicate by service name
+  # Example: wordpress can connect to 'mariadb:3306'
+  inception-network:
+    driver: bridge
+
+# ============================================================================ #
+# VOLUMES                                                                      #
+# ============================================================================ #
+
+volumes:
+  # WordPress files volume
+  # Maps to /home/login/data/wordpress on the host
+  wordpress-data:
+    driver: local
+    driver_opts:
+      type: none
+      # Bind mount: link to a directory on the host
+      o: bind
+      # Path on the host machine (must exist, created by Makefile)
+      device: /home/${USER}/data/wordpress
+
+  # MariaDB database volume
+  # Maps to /home/login/data/mariadb on the host
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/mariadb
+
+# ============================================================================ #
+# SECRETS                                                                      #
+# ============================================================================ #
+
+secrets:
+  # Database user password
+  # Mounted in containers at /run/secrets/db_password
+  db_password:
+    file: ../secrets/db_password.txt
+
+  # Database root password
+  # Mounted in containers at /run/secrets/db_root_password
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+
+  # WordPress credentials (admin and user)
+  # Mounted in containers at /run/secrets/credentials
+  credentials:
+    file: ../secrets/credentials.txt
