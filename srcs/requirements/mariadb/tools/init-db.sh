@@ -185,7 +185,7 @@ log "Database configured successfully"
 log "Stopping temporary MariaDB instance..."
 
 # Send shutdown command to MariaDB
-mysqladmin --socket=/tmp/mysql.sock shutdown
+mysqladmin --socket=/tmp/mysql.sock shutdown -u root -p"${MYSQL_ROOT_PASSWORD}"
 
 # Wait for the background process to finish
 wait $MYSQL_PID

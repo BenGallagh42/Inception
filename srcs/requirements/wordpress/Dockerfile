@@ -24,6 +24,8 @@ RUN apt-get update && \
     # Utilities
     curl \
     wget \
+    mariadb-client \
+    netcat \
     ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
@@ -46,9 +48,12 @@ COPY tools/setup-wordpress.sh /usr/local/bin/setup-wordpress.sh
 RUN chmod +x /usr/local/bin/setup-wordpress.sh
 
 # Create directory for WordPress files
-# This is where WordPress will be installed
 RUN mkdir -p /var/www/html && \
     chown -R www-data:www-data /var/www/html
+
+# Create directory for PHP-FPM PID file
+RUN mkdir -p /run/php && \
+    chown -R www-data:www-data /run/php
 
 # Expose port 9000 (PHP-FPM default port)
 # NGINX will connect to this port

@@ -6,7 +6,7 @@
 NAME = inception
 
 # Path to docker compose file
-COMPOSE_FILE = srcs/docker compose.yml
+COMPOSE_FILE = srcs/docker-compose.yml
 
 # Path where volumes will be stored on the host
 # The subject requires: /home/login/data
@@ -46,7 +46,7 @@ up:
 	@echo "$(BLUE)Building and starting $(NAME)...$(NC)"
 	@docker compose -f $(COMPOSE_FILE) up -d --build
 	@echo "$(GREEN)✓ $(NAME) is running!$(NC)"
-	@echo "$(YELLOW)→ Access your website at: https://$(USER).42.fr$(NC)"
+	@echo "$(YELLOW)→ Access the website at: https://$(USER).42.fr$(NC)"
 
 # Stop and remove all containers
 # Keeps images and volumes (data is preserved)

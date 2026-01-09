@@ -11,7 +11,8 @@ FROM debian:bullseye
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     nginx \
-    openssl && \
+    openssl \
+    gettext-base && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy NGINX configuration file

@@ -65,7 +65,7 @@ log "Waiting for MariaDB to be ready..."
 # Wait for MariaDB container to be accessible
 # Try for up to 60 seconds
 for i in {1..60}; do
-    if mysqladmin ping -h"mariadb" -u"$MYSQL_USER" -p"$(read_secret $DB_PASSWORD_FILE)" --silent &>/dev/null; then
+    if nc -z mariadb 3306 2>/dev/null; then
         log "MariaDB is ready!"
         break
     fi
