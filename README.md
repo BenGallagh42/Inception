@@ -98,10 +98,6 @@ Pure bind mounts would work but Docker volumes are the recommended approach.
 - [NGINX docs](https://nginx.org/en/docs/)
 - [WordPress Codex](https://wordpress.org/documentation/)
 - [MariaDB KB](https://mariadb.com/kb/)
-<<<<<<< HEAD
-- Various Stack Overflow threads when debugging
-=======
->>>>>>> 3173b6539153facea6e6d23371219c7b05fc61d3
 
 ### AI Usage
 
