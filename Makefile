@@ -47,7 +47,7 @@ up:
 	@docker compose -f $(COMPOSE_FILE) up -d --build > /dev/null 2>&1
 	@echo "$(GREEN)✓ $(NAME) is running!$(NC)"
 	@echo "$(YELLOW)→ Access the website at: https://$(USER).42.fr$(NC)"
-	@echo "$(YELLOW)→ Use "make help" to see available commands.(NC)"
+	@echo "$(YELLOW)→ Use "make help" to see available commands.$(NC)"
 
 # Stop and remove all containers
 # Keeps images and volumes (data is preserved)
