@@ -44,7 +44,7 @@ create_volumes:
 # --build: rebuild images even if they exist
 up:
 	@echo "$(BLUE)Building and starting $(NAME)...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) up -d --build
+	@docker compose -f $(COMPOSE_FILE) up -d --build > /dev/null 2>&1
 	@echo "$(GREEN)✓ $(NAME) is running!$(NC)"
 	@echo "$(YELLOW)→ Access the website at: https://$(USER).42.fr$(NC)"
 	@echo "$(YELLOW)→ Use "make help" to see available commands.(NC)"
@@ -53,21 +53,21 @@ up:
 # Keeps images and volumes (data is preserved)
 down:
 	@echo "$(BLUE)Stopping $(NAME)...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) down
+	@docker compose -f $(COMPOSE_FILE) down > /dev/null 2>&1
 	@echo "$(GREEN)✓ Containers stopped$(NC)"
 
 # Remove everything: containers, images, volumes
 # WARNING: This deletes Docker volumes but not host directories
 clean: down
 	@echo "$(RED)Cleaning Docker resources...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) down -v --rmi all
+	@docker compose -f $(COMPOSE_FILE) down -v --rmi all > /dev/null 2>&1
 	@echo "$(GREEN)✓ Docker cleaned$(NC)"
 
 # Full clean: also remove data directories from host
 # WARNING: This permanently deletes ALL data (database, wordpress files)
 fclean: clean
 	@echo "$(RED)Removing data directories...$(NC)"
-	@sudo rm -rf $(DATA_PATH)
+	@sudo rm -rf $(DATA_PATH) > /dev/null 2>&1
 	@echo "$(GREEN)✓ All data removed$(NC)"
 
 # Rebuild everything from scratch
